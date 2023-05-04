@@ -249,13 +249,11 @@ class RubiconPipeline(Pipeline):
 
     def _get_logger_slice(self, steps):
         """Given a slice of estimators, returns the associated slice of loggers."""
-        user_defined_loggers_slice = {}
-
-        for name, _ in steps:
-            if name in self.user_defined_loggers:
-                user_defined_loggers_slice[name] = self.user_defined_loggers[name]
-
-        return user_defined_loggers_slice
+        return {
+            name: self.user_defined_loggers[name]
+            for name, _ in steps
+            if name in self.user_defined_loggers
+        }
 
 
 def make_pipeline(
@@ -305,7 +303,7 @@ def make_pipeline(
 
     if type(project) != Project:
         raise ValueError(
-            "project" + str(project) + " must be of type rubicon_ml.client.project.Project"
+            f"project{str(project)} must be of type rubicon_ml.client.project.Project"
         )
 
     return RubiconPipeline(project, steps, user_defined_loggers, experiment_kwargs, memory, verbose)
@@ -355,10 +353,8 @@ def _name_loggers(steps, loggers):
     dict of str, rubicon_ml.sklearn.EstimatorLogger
         The named rubicon-ml loggers.
     """
-    named_loggers = {}
-
-    for i in range(len(steps)):
-        if loggers[i] is not None:
-            named_loggers[str(steps[i][0])] = loggers[i]
-
-    return named_loggers
+    return {
+        str(steps[i][0]): loggers[i]
+        for i in range(len(steps))
+        if loggers[i] is not None
+    }

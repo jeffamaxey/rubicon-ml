@@ -72,10 +72,7 @@ class Config:
         if self.persistence == "memory":
             return "memory"
         elif self.persistence == "filesystem":
-            if self.root_dir.startswith("s3://"):
-                return "s3"
-            else:
-                return "local"
+            return "s3" if self.root_dir.startswith("s3://") else "local"
 
     def _get_repository(self):
         """Get the repository for the configured persistence type."""

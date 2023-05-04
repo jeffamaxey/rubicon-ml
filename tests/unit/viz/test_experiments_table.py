@@ -13,7 +13,7 @@ def test_experiments_table(viz_experiments):
 
         expected_experiment_ids.remove(experiment.id)
 
-    assert len(expected_experiment_ids) == 0
+    assert not expected_experiment_ids
     assert experiments_table.is_selectable is True
 
 
@@ -27,8 +27,8 @@ def test_experiments_table_load_data(viz_experiments):
 
     for record in experiments_table.experiment_records:
         assert record["id"] in expected_experiment_ids
-        assert all([record.get(name) is not None for name in expected_metric_names])
-        assert all([record.get(name) is not None for name in expected_parameter_names])
+        assert all(record.get(name) is not None for name in expected_metric_names)
+        assert all(record.get(name) is not None for name in expected_parameter_names)
 
     assert experiments_table.commit_hash == viz_experiments[0].commit_hash
     assert experiments_table.github_url == f"test.github.url/tree/{viz_experiments[0].commit_hash}"

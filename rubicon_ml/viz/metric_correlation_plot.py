@@ -51,23 +51,21 @@ class MetricCorrelationPlot(VizBase):
         """Transforms the input data for use with Plotly's parallel
         coordinates plot.
         """
-        if len(values) > 0 and any([isinstance(v, str) or isinstance(v, bool) for v in values]):
+        if len(values) > 0 and any(isinstance(v, (str, bool)) for v in values):
             values = [str(v) for v in values]
             unique_values, values = np.unique(values, return_inverse=True)
 
-            dimension = {
+            return {
                 "label": label,
                 "ticktext": unique_values,
                 "tickvals": list(range(0, len(unique_values))),
                 "values": values,
             }
         else:
-            dimension = {
+            return {
                 "label": label,
                 "values": values,
             }
-
-        return dimension
 
     @property
     def layout(self):
@@ -133,8 +131,7 @@ class MetricCorrelationPlot(VizBase):
             )
 
         self.visible_parameter_names = list(self.visible_parameter_names)
-        self.visible_metric_names = list(self.visible_metric_names)
-        self.visible_metric_names.sort()
+        self.visible_metric_names = sorted(self.visible_metric_names)
 
     def register_callbacks(self, link_experiment_table=False):
         outputs = [
@@ -199,7 +196,7 @@ class MetricCorrelationPlot(VizBase):
             plot_dimensions = []
 
             for parameter_name, parameter_value in parameter_values.items():
-                if any([p is not None for p in parameter_value]):
+                if any(p is not None for p in parameter_value):
                     plot_dimensions.append(self._get_dimension(parameter_name, parameter_value))
 
             plot_dimensions.append(self._get_dimension(selected_metric, metric_values))

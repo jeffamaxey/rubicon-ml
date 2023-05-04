@@ -19,7 +19,7 @@ def test_metric_correlation_plot(viz_experiments):
 
         expected_experiment_ids.remove(experiment.id)
 
-    assert len(expected_experiment_ids) == 0
+    assert not expected_experiment_ids
     assert metric_plot.metric_names == ["test metric 0", "test metric 1"]
     assert metric_plot.parameter_names == ["test param 1", "test param 2"]
     assert metric_plot.selected_metric == "test metric 1"

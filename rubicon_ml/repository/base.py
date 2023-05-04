@@ -37,13 +37,11 @@ class BaseRepository:
 
     def _ls_directories_only(self, path):
         """Returns the names of all the directories at path `path`."""
-        directories = [
+        return [
             os.path.join(p.get("name"), "metadata.json")
             for p in self.filesystem.ls(path, detail=True)
             if p.get("type", p.get("StorageClass")).lower() == "directory"
         ]
-
-        return directories
 
     def _cat_paths(self, metadata_paths):
         """Cat `metadata_paths` to get the list of files to include.
@@ -219,12 +217,11 @@ class BaseRepository:
         """Returns the artifacts directory of the project with name
         `project_name` or experiment with ID `experiment_id`.
         """
-        if experiment_id is not None:
-            experiment_metadata_root = self._get_experiment_metadata_root(project_name)
-
-            return f"{experiment_metadata_root}/{experiment_id}/artifacts"
-        else:
+        if experiment_id is None:
             return f"{self.root_dir}/{slugify(project_name)}/artifacts"
+        experiment_metadata_root = self._get_experiment_metadata_root(project_name)
+
+        return f"{experiment_metadata_root}/{experiment_id}/artifacts"
 
     def _get_artifact_metadata_path(self, project_name, experiment_id, artifact_id):
         """Returns the path of the artifact with ID `artifact_id`'s
@@ -389,12 +386,11 @@ class BaseRepository:
         """Returns the dataframes directory of the project with name
         `project_name` or experiment with ID `experiment_id`.
         """
-        if experiment_id is not None:
-            experiment_metadata_root = self._get_experiment_metadata_root(project_name)
-
-            return f"{experiment_metadata_root}/{experiment_id}/dataframes"
-        else:
+        if experiment_id is None:
             return f"{self.root_dir}/{slugify(project_name)}/dataframes"
+        experiment_metadata_root = self._get_experiment_metadata_root(project_name)
+
+        return f"{experiment_metadata_root}/{experiment_id}/dataframes"
 
     def _get_dataframe_metadata_path(self, project_name, experiment_id, dataframe_id):
         """Returns the path of the dataframe with ID `dataframe_id`'s
@@ -436,7 +432,7 @@ class BaseRepository:
 
         if df_type == "pandas":
             path = f"{path}/data.parquet"
-            df = pd.read_parquet(path, engine="pyarrow")
+            return pd.read_parquet(path, engine="pyarrow")
         else:
             try:
                 from dask import dataframe as dd
@@ -447,9 +443,7 @@ class BaseRepository:
                     "or `conda install dask` to continue."
                 )
 
-            df = dd.read_parquet(path, engine="pyarrow")
-
-        return df
+            return dd.read_parquet(path, engine="pyarrow")
 
     def create_dataframe(self, dataframe, data, project_name, experiment_id=None):
         """Persist a dataframe to the configured filesystem.
@@ -1060,6 +1054,4 @@ class BaseRepository:
         sorted_tag_paths = self._sort_tag_paths(tag_paths)
 
         tag_data = self.filesystem.cat([p for _, p in sorted_tag_paths])
-        sorted_tag_data = [json.loads(tag_data[p]) for _, p in sorted_tag_paths]
-
-        return sorted_tag_data
+        return [json.loads(tag_data[p]) for _, p in sorted_tag_paths]
