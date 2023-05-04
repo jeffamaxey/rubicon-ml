@@ -50,15 +50,10 @@ class Dashboard(VizBase):
         for row in self.widgets:
             width = COL_WIDTH_LOOKUP[len(row)]
 
-            row_widgets = []
-            for widget in row:
-                row_widgets.append(dbc.Col(widget.layout, width=width))
-
+            row_widgets = [dbc.Col(widget.layout, width=width) for widget in row]
             dashboard_rows.append(dbc.Row(row_widgets))
 
-        dashboard_container = html.Div(dashboard_rows)
-
-        return dashboard_container
+        return html.Div(dashboard_rows)
 
     def load_experiment_data(self):
         """Load the experiment data required for the dashboard.

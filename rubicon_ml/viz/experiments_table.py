@@ -327,16 +327,16 @@ class ExperimentsTable(VizBase):
             return [column for column in self.all_columns if column not in selected_columns]
 
         @self.app.callback(
-            Output("experiment-table", "selected_rows"),
-            [
-                Input("select-all-button", "n_clicks_timestamp"),
-                Input("clear-all-button", "n_clicks_timestamp"),
-            ],
-            State("experiment-table", "derived_virtual_indices"),
-        )
+                Output("experiment-table", "selected_rows"),
+                [
+                    Input("select-all-button", "n_clicks_timestamp"),
+                    Input("clear-all-button", "n_clicks_timestamp"),
+                ],
+                State("experiment-table", "derived_virtual_indices"),
+            )
         def update_selected_experiment_table_rows(
-            last_select_click, last_clear_click, experiment_table_indices
-        ):
+                last_select_click, last_clear_click, experiment_table_indices
+            ):
             """Bulk selection for the rows of the experiment table.
 
             Returns all if triggered by the "select all" button and returns
@@ -348,10 +348,7 @@ class ExperimentsTable(VizBase):
             last_select_click = last_select_click if last_select_click else 0
             last_clear_click = last_clear_click if last_clear_click else 0
 
-            if last_select_click > last_clear_click:
-                return experiment_table_indices
-
-            return []
+            return experiment_table_indices if last_select_click > last_clear_click else []
 
         @self.app.callback(
             Output("publish-modal", "is_open"),

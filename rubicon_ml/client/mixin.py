@@ -109,7 +109,9 @@ class ArtifactMixin:
         ... )
         """
 
-        if not isinstance(tags, list) or not all([isinstance(tag, str) for tag in tags]):
+        if not isinstance(tags, list) or not all(
+            isinstance(tag, str) for tag in tags
+        ):
             raise ValueError("`tags` must be `list` of type `str`")
 
         data_bytes, name = self._validate_data(data_bytes, data_file, data_object, data_path, name)
@@ -171,9 +173,7 @@ class ArtifactMixin:
             artifact_name = f"environment-{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.yml"
 
         env_bytes = self._get_environment_bytes(["conda", "env", "export"])
-        artifact = self.log_artifact(data_bytes=env_bytes, name=artifact_name)
-
-        return artifact
+        return self.log_artifact(data_bytes=env_bytes, name=artifact_name)
 
     @failsafe
     def log_pip_requirements(self, artifact_name=None):
@@ -194,9 +194,7 @@ class ArtifactMixin:
             artifact_name = f"requirements-{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.txt"
 
         requirements_bytes = self._get_environment_bytes(["pip", "freeze"])
-        artifact = self.log_artifact(data_bytes=requirements_bytes, name=artifact_name)
-
-        return artifact
+        return self.log_artifact(data_bytes=requirements_bytes, name=artifact_name)
 
     @failsafe
     def artifacts(self, name=None, tags=[], qtype="or"):
@@ -258,14 +256,15 @@ class ArtifactMixin:
                     f"Multiple artifacts found with name '{name}'. Returning most recently logged."
                 )
 
-            artifact = artifacts[-1]
+            return artifacts[-1]
         else:
             project_name, experiment_id = self._get_identifiers()
-            artifact = client.Artifact(
-                self.repository.get_artifact_metadata(project_name, id, experiment_id), self
+            return client.Artifact(
+                self.repository.get_artifact_metadata(
+                    project_name, id, experiment_id
+                ),
+                self,
             )
-
-        return artifact
 
     @failsafe
     def delete_artifacts(self, ids):
@@ -305,7 +304,9 @@ class DataframeMixin:
         rubicon.client.Dataframe
             The new dataframe.
         """
-        if not isinstance(tags, list) or not all([isinstance(tag, str) for tag in tags]):
+        if not isinstance(tags, list) or not all(
+            isinstance(tag, str) for tag in tags
+        ):
             raise ValueError("`tags` must be `list` of type `str`")
 
         dataframe = domain.Dataframe(
@@ -421,10 +422,8 @@ class TagMixin:
         # experiments do not return an entity identifier - they are the entity
         if isinstance(self, client.Experiment):
             experiment_id = self.id
-        # dataframes and artifacts are identified by their `id`s
-        elif isinstance(self, client.Dataframe) or isinstance(self, client.Artifact):
+        elif isinstance(self, (client.Dataframe, client.Artifact)):
             entity_identifier = self.id
-        # everything else is identified by its `name`
         else:
             entity_identifier = self.name
 
@@ -439,7 +438,9 @@ class TagMixin:
         tags : list of str
             The tag values to add.
         """
-        if not isinstance(tags, list) or not all([isinstance(tag, str) for tag in tags]):
+        if not isinstance(tags, list) or not all(
+            isinstance(tag, str) for tag in tags
+        ):
             raise ValueError("`tags` must be `list` of type `str`")
 
         project_name, experiment_id, entity_identifier = self._get_taggable_identifiers()

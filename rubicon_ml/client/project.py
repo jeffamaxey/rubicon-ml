@@ -241,7 +241,9 @@ class Project(Base, ArtifactMixin, DataframeMixin):
         rubicon.client.Experiment
             The created experiment.
         """
-        if not isinstance(tags, list) or not all([isinstance(tag, str) for tag in tags]):
+        if not isinstance(tags, list) or not all(
+            isinstance(tag, str) for tag in tags
+        ):
             raise ValueError("`tags` must be `list` of type `str`")
 
         experiment = self._create_experiment_domain(
@@ -276,22 +278,20 @@ class Project(Base, ArtifactMixin, DataframeMixin):
         if (name is None and id is None) or (name is not None and id is not None):
             raise ValueError("`name` OR `id` required.")
 
-        if name is not None:
-            experiments = [e for e in self.experiments() if e.name == name]
+        if name is None:
+            return Experiment(self.repository.get_experiment(self.name, id), self)
 
-            if len(experiments) == 0:
-                raise RubiconException(f"No experiment found with name '{name}'.")
-            elif len(experiments) > 1:
-                warnings.warn(
-                    f"Multiple experiments found with name '{name}'."
-                    " Returning most recently logged."
-                )
+        experiments = [e for e in self.experiments() if e.name == name]
 
-            experiment = experiments[-1]
-        else:
-            experiment = Experiment(self.repository.get_experiment(self.name, id), self)
+        if not experiments:
+            raise RubiconException(f"No experiment found with name '{name}'.")
+        elif len(experiments) > 1:
+            warnings.warn(
+                f"Multiple experiments found with name '{name}'."
+                " Returning most recently logged."
+            )
 
-        return experiment
+        return experiments[-1]
 
     @failsafe
     def experiments(self, tags=[], qtype="or", name=None):

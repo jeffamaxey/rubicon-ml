@@ -149,7 +149,7 @@ class MetricListsComparison(VizBase):
                 f"{'s' if len(experiment_ids) != 1 else ''}"
             )
 
-            if len(heatmap_data) == 0:
+            if not heatmap_data:
                 return [], {"display": "none"}, header_right_text, selected_metric
 
             data_array = np.array(heatmap_data)

@@ -82,7 +82,9 @@ def _update_catalog(base_catalog_filepath, new_experiments, output_filepath=None
 
         curr_catalog["sources"].update(updated_catalog["sources"])
 
-    resulting_filepath = base_catalog_filepath if not output_filepath else output_filepath
+    resulting_filepath = (
+        output_filepath if output_filepath else base_catalog_filepath
+    )
 
     with fsspec.open(resulting_filepath, "w") as yamlfile:
         yaml.safe_dump(curr_catalog, yamlfile)
