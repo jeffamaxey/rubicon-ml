@@ -57,7 +57,7 @@ def test_can_deserialize_set():
     to_deserialize = '{"tags": {"_type": "set", "value": ["tag-b", "tag-a"]}}'
     deserialized = json.loads(to_deserialize)
 
-    assert deserialized["tags"] == set(["tag-a", "tag-b"])
+    assert deserialized["tags"] == {"tag-a", "tag-b"}
 
 
 def test_can_serialize_numpy_scalar():

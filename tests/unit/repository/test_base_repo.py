@@ -153,7 +153,7 @@ def test_get_project_throws_error_if_not_found(memory_repository):
 
 def test_get_projects(memory_repository):
     repository = memory_repository
-    written_projects = [_create_project(repository) for i in range(0, 3)]
+    written_projects = [_create_project(repository) for _ in range(0, 3)]
     projects = repository.get_projects()
 
     assert len(projects) == 3

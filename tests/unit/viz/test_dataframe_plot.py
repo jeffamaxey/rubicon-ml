@@ -24,7 +24,7 @@ def test_dataframe_plot(viz_experiments):
 
         expected_experiment_ids.remove(experiment.id)
 
-    assert len(expected_experiment_ids) == 0
+    assert not expected_experiment_ids
     assert dataframe_plot.dataframe_name == "test dataframe"
     assert dataframe_plot.plotting_func == test_plotting_func
     assert dataframe_plot.plotting_func_kwargs == {"test": "test"}

@@ -34,13 +34,13 @@ def test_filesystem_concurrency(rubicon_local_filesystem_client):
     experiment = project.log_experiment()
 
     processes = []
-    for i in range(0, 4):
+    for _ in range(0, 4):
         process = multiprocessing.Process(target=_read_all_from_experiment, args=[experiment])
         process.start()
 
         processes.append(process)
 
-    for i in range(0, 4):
+    for _ in range(0, 4):
         process = multiprocessing.Process(target=_log_all_to_experiment, args=[experiment])
         process.start()
 

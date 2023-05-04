@@ -18,7 +18,7 @@ def test_metric_lists_comparison(viz_experiments):
 
         expected_experiment_ids.remove(experiment.id)
 
-    assert len(expected_experiment_ids) == 0
+    assert not expected_experiment_ids
     assert metric_comparison.column_names == ["var_0", "var_1", "var_2", "var_3", "var_4"]
     assert metric_comparison.selected_metric == "test metric 2"
 

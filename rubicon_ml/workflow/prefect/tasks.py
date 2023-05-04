@@ -47,9 +47,7 @@ def get_or_create_project_task(
         auto_git_enabled=auto_git_enabled,
         **storage_options,
     )
-    project = rubicon.get_or_create_project(project_name, **kwargs)
-
-    return project
+    return rubicon.get_or_create_project(project_name, **kwargs)
 
 
 @task

@@ -77,11 +77,9 @@ def project_client(rubicon_client):
     rubicon = rubicon_client
 
     project_name = "Test Project"
-    project = rubicon.get_or_create_project(
+    return rubicon.get_or_create_project(
         project_name, description="In memory project for testing."
     )
-
-    return project
 
 
 @pytest.fixture
@@ -179,7 +177,7 @@ def viz_experiments(rubicon_and_project_client):
 
     dates = pd.date_range(start="1/1/2010", end="12/1/2020", freq="MS")
 
-    for i in range(0, 10):
+    for _ in range(0, 10):
         experiment = project.log_experiment(
             commit_hash="1234567",
             model_name="test model name",

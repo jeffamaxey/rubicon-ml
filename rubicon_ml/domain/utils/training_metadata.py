@@ -29,7 +29,7 @@ class TrainingMetadata:
         if not isinstance(training_metadata, list):
             training_metadata = [training_metadata]
 
-        if not all([isinstance(tm, tuple) for tm in training_metadata]):
+        if not all(isinstance(tm, tuple) for tm in training_metadata):
             raise RubiconException("`training_metadata` must be a list of tuples.")
 
         self.training_metadata = training_metadata

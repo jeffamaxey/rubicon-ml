@@ -7,9 +7,7 @@ transparent = "rgba(255, 255, 255, 0)"
 
 
 def get_rubicon_colorscale(num_colors, low=0.33):
-    if num_colors < 2:
-        num_colors = 2
-
+    num_colors = max(num_colors, 2)
     return px.colors.sample_colorscale(
         "Blues",
         num_colors,

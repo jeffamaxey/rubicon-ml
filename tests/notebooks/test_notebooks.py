@@ -32,7 +32,7 @@ def test_notebook_is_executed_in_order(notebook_filename):
         cell.get("execution_count") for cell in notebook.cells if cell.get("cell_type") == "code"
     ]
 
-    is_all_cells_executed = all([ec is not None for ec in execution_counts])
+    is_all_cells_executed = all(ec is not None for ec in execution_counts)
     if not is_all_cells_executed:
         failure_message = "all code cells are not executed"
 

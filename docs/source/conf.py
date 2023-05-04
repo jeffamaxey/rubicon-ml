@@ -10,7 +10,7 @@ import re
 
 from rubicon_ml import __version__
 
-version = re.search(r"([\d.]+)", __version__).group(1)
+version = re.search(r"([\d.]+)", __version__)[1]
 
 # -- Path setup --------------------------------------------------------------
 

@@ -101,7 +101,7 @@ class VizBase:
             "dev_tools_silence_routes_logging": True,
             "port": _next_available_port,
         }
-        default_run_server_kwargs.update(run_server_kwargs)
+        default_run_server_kwargs |= run_server_kwargs
 
         _next_available_port = default_run_server_kwargs["port"] + 1
 
@@ -158,6 +158,6 @@ class VizBase:
             "height": "600px",
             "width": "100%",
         }
-        default_i_frame_kwargs.update(i_frame_kwargs)
+        default_i_frame_kwargs |= i_frame_kwargs
 
         return IFrame(proxied_host, **default_i_frame_kwargs)
